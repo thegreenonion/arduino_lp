@@ -34,7 +34,7 @@ void config_ap_response()
 void setup_ap()
 {
   Serial.println(F("Starting AP!"));
-  WiFi.softAP("robo");
+  WiFi.softAP("lp");
 
   Serial.println(F("Gateway IP address: "));
   Serial.println(WiFi.softAPIP());
