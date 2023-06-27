@@ -97,7 +97,7 @@ void setup_ap()
 {
   Serial.println(F("Starting AP!"));
   WiFi.softAPConfig(apIP, apIP, netMsk);
-  WiFi.softAP("robo");
+  WiFi.softAP("ardionoap");
   Serial.println(F("Gateway IP address: "));
   Serial.println(WiFi.softAPIP());
   dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
@@ -156,14 +156,16 @@ void loop()
   dnsServer.processNextRequest();
   if (looping) {
     if (read_left_sensor() == 1) {
-      Serial.println(F("Turn left?")); 
+      Serial.println(F("Turn left?"));
+      move_left();
     }
     if (read_right_sensor() == 1) {
       Serial.println(F("Turn right?")); 
+      move_right();
     }
-    move_left();
+    //move_left();
     delay(1000);
-    move_right();
+    //move_right();
     delay(1000);    
   } else {
     stop();
