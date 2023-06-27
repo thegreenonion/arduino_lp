@@ -1,3 +1,7 @@
+// Latest version
+// No known issues
+// Thanks to ApfelPresse from GitHub
+
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
@@ -36,10 +40,10 @@ void stop()
 void move_forward()
 {
   analogWrite(PWMA, 255);
-  digitalWrite(DA, HIGH);
+  digitalWrite(DA, LOW);
 
   analogWrite(PWMB, 255);
-  digitalWrite(DB, HIGH);
+  digitalWrite(DB, LOW);
 }
 
 void move_left()
@@ -63,10 +67,10 @@ void move_right()
 void move_backward()
 {
   analogWrite(PWMA, 255);
-  digitalWrite(DA, LOW);
+  digitalWrite(DA, HIGH);
 
   analogWrite(PWMB, 255);
-  digitalWrite(DB, LOW);
+  digitalWrite(DB, HIGH);
 }
 
 int read_left_sensor()
@@ -97,7 +101,7 @@ void setup_ap()
 {
   Serial.println(F("Starting AP!"));
   WiFi.softAPConfig(apIP, apIP, netMsk);
-  WiFi.softAP("ardionoap");
+  WiFi.softAP("NodeMCU Control AP");
   Serial.println(F("Gateway IP address: "));
   Serial.println(WiFi.softAPIP());
   dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
@@ -148,7 +152,7 @@ void setup()
                 request->send(200, "text/plain"); });
 
 
-  Serial.println(F("Looping.."));
+  Serial.println(F("Setup finished! Starting loop..."));
 }
 
 void loop()
@@ -156,18 +160,29 @@ void loop()
   dnsServer.processNextRequest();
   if (looping) {
     if (read_left_sensor() == 1) {
-      Serial.println(F("Turn left?"));
-      move_left();
-    }
-    if (read_right_sensor() == 1) {
-      Serial.println(F("Turn right?")); 
+      Serial.println(F("Left sensor triggered, turning right...")); 
       move_right();
+      //delay(1000);
+      //stop();
+    }
+    else if (read_right_sensor() == 1) {
+      Serial.println(F("Right sensor triggered, turning left...")); 
+      move_left();
+      //delay(1000);
+      //stop();
+    }
+    else
+    {
+      Serial.println(F("Moving forward..."));
+      move_forward();
     }
     //move_left();
-    delay(1000);
+    //delay(1000);
     //move_right();
-    delay(1000);    
-  } else {
+    //delay(1000);    
+  }
+  else 
+  {
     stop();
   }
 }
